@@ -1,8 +1,9 @@
 import React from "react";
+import Layout from "../components/Layout";
 
 const AboutPage = () => {
   return (
-    <div>
+    <Layout title="About">
       <h1>This is about page</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum deserunt
@@ -18,7 +19,7 @@ const AboutPage = () => {
         consectetur fugiat, quo exercitationem dolorem repellendus iste
         quisquam? Est.
       </p>
-    </div>
+    </Layout>
   );
 };
 
