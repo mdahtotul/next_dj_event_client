@@ -1,14 +1,14 @@
+import styles from "@/styles/Layout.module.css";
 import Head from "next/head";
-import React from "react";
-import styles from "../styles/Layout.module.css";
 import Footer from "./Footer";
 import Header from "./Header";
 
 const Layout = ({ title, keywords, description, children }) => {
+  const pageTitle = title ? `DJ Events - ${title}` : "DJ Events";
   return (
     <div>
       <Head>
-        <title>DJ Events - {title}</title>
+        <title>{pageTitle}</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
       </Head>
@@ -25,7 +25,6 @@ const Layout = ({ title, keywords, description, children }) => {
 export default Layout;
 
 Layout.defaultProps = {
-  title: "DJ Events | Find the hottest parties",
   description: "Find the latest DJ and other musical events",
   keywords: "music, dj, edm, events",
 };
