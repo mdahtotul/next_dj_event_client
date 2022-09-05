@@ -1,13 +1,61 @@
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
+import styles from "@/styles/Event.module.css";
+import Image from "next/image";
+import Link from "next/link";
+import * as FaIcons from "react-icons/fa";
 
 const SingleEventPage = ({ event }) => {
-  const { name } = event;
+  const {
+    name,
+    id,
+    date,
+    time,
+    image,
+    address,
+    performers,
+    venue,
+    description,
+  } = event;
+
+  const deleteEvent = () => {};
 
   return (
     <Layout title="Single Event">
-      <h1>Single event page</h1>
-      <p>{name}</p>
+      <div className={styles.event}>
+        <div className={styles.controls}>
+          <Link href={`/events/edit/${id}`}>
+            <a>
+              {" "}
+              <FaIcons.FaPencilAlt /> Edit Event{" "}
+            </a>
+          </Link>
+          <a href="#" className={styles.delete} onClick={deleteEvent}>
+            <FaIcons.FaTimes /> Delete Event
+          </a>
+        </div>
+
+        <span>
+          {date} at {time}{" "}
+        </span>
+        <h1>{name}</h1>
+        {image && (
+          <div className={styles.image}>
+            <Image src={image} alt={name} width={960} height={600} />
+          </div>
+        )}
+
+        <h3>Performers</h3>
+        <p>{performers}</p>
+        <h3>Description</h3>
+        <p>{description}</p>
+        <h3>Venue: {venue}</h3>
+        <p>{address}</p>
+
+        <Link href="/events">
+          <a className={styles.back}> {"<"}Go Back</a>
+        </Link>
+      </div>
     </Layout>
   );
 };
