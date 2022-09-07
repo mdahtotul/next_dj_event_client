@@ -16,7 +16,7 @@ const SingleEventPage = ({ event }) => {
     performers,
     venue,
     description,
-  } = event;
+  } = event?.attributes;
 
   const deleteEvent = () => {};
 
@@ -36,12 +36,28 @@ const SingleEventPage = ({ event }) => {
         </div>
 
         <span>
-          {date} at {time}{" "}
+          {date &&
+            new Date(date).toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}{" "}
+          at {time}{" "}
         </span>
         <h1>{name}</h1>
         {image && (
           <div className={styles.image}>
-            <Image src={image} alt={name} width={960} height={600} />
+            <Image
+              src={
+                image?.data?.attributes?.formats?.medium?.url
+                  ? image?.data?.attributes?.formats?.medium?.url
+                  : "/images/event-default.png"
+              }
+              alt={name}
+              width={960}
+              height={600}
+            />
           </div>
         )}
 
@@ -62,15 +78,15 @@ const SingleEventPage = ({ event }) => {
 
 export default SingleEventPage;
 
-// export async function getServerSideProps({ query: { slug } }) {
-//   console.log(slug);
+// server side and static generation both are working now
 
+// export async function getServerSideProps({ query: { slug } }) {
 //   const res = await fetch(`${API_URL}/api/events/${slug}`);
 //   const singleEvent = await res.json();
 
 //   return {
 //     props: {
-//       event: singleEvent[0],
+//       event: singleEvent?.data,
 //     },
 //   };
 // }
@@ -79,8 +95,8 @@ export async function getStaticPaths() {
   const res = await fetch(`${API_URL}/api/events`);
   const events = await res.json();
 
-  const paths = events.map((item) => ({
-    params: { slug: item.slug },
+  const paths = events?.data?.map((item) => ({
+    params: { slug: item?.attributes?.slug },
   }));
 
   return {
@@ -95,7 +111,7 @@ export async function getStaticProps({ params: { slug } }) {
 
   return {
     props: {
-      event: singleEvent[0],
+      event: singleEvent?.data,
     },
     revalidate: 1,
   };

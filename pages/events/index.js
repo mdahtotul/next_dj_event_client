@@ -9,18 +9,18 @@ export default function EventsPage({ events }) {
       {events.length === 0 && <h3>No events to show</h3>}
 
       {events?.length > 0 &&
-        events.map((item, idx) => <EventItem key={idx} event={item} />)}
+        events.map((item, idx) => <EventItem key={idx} eventObj={item} />)}
     </Layout>
   );
 }
 
 // export async function getServerSideProps() {
 export async function getStaticProps() {
-  const res = await fetch(`${API_URL}/api/events`);
+  const res = await fetch(`${API_URL}/api/events?sort=date:ASC&populate=*`);
   const events = await res.json();
 
   return {
-    props: { events },
+    props: { events: events?.data },
     revalidate: 1,
   };
 }
