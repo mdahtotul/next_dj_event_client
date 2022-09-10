@@ -1,0 +1,31 @@
+.list_event {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.list_event:hover {
+  border-radius: 8px;
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+}
+
+.name_date {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-left: 10px;
+}
+
+.name_date h3 {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.name_date p {
+  font-size: 11px;
+}

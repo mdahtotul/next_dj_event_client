@@ -1,0 +1,32 @@
+.search {
+  position: relative;
+}
+
+.search input {
+  width: 250px;
+  height: 35px;
+  padding: 5px;
+  border: 1px solid #777;
+  border-radius: 6px;
+}
+
+.search_events {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  height: max-content;
+  padding: 0;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  box-shadow: 3px 3px 5px #d1d1d1, -3px -3px 5px #ffffff;
+  z-index: 100;
+}
+
+.not_found {
+  width: 250px;
+  text-align: center;
+  color: #ec1c24;
+  font-weight: 600;
+}

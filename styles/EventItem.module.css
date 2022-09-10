@@ -4,7 +4,14 @@
   align-items: center;
   margin: 20px 0;
   padding: 13px;
-  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+}
+
+.event:hover {
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
 }
 
 .img {
