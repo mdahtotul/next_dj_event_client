@@ -80,32 +80,7 @@ export default SingleEventPage;
 
 // server side and static generation both are working now
 
-// export async function getServerSideProps({ query: { slug } }) {
-//   const res = await fetch(`${API_URL}/api/events/${slug}`);
-//   const singleEvent = await res.json();
-
-//   return {
-//     props: {
-//       event: singleEvent?.data,
-//     },
-//   };
-// }
-
-export async function getStaticPaths() {
-  const res = await fetch(`${API_URL}/api/events`);
-  const events = await res.json();
-
-  const paths = events?.data?.map((item) => ({
-    params: { slug: item?.attributes?.slug },
-  }));
-
-  return {
-    paths,
-    fallback: true,
-  };
-}
-
-export async function getStaticProps({ params: { slug } }) {
+export async function getServerSideProps({ params: { slug } }) {
   const res = await fetch(`${API_URL}/api/events/${slug}`);
   const singleEvent = await res.json();
 
@@ -113,6 +88,31 @@ export async function getStaticProps({ params: { slug } }) {
     props: {
       event: singleEvent?.data,
     },
-    revalidate: 1,
   };
 }
+
+// export async function getStaticPaths() {
+//   const res = await fetch(`${API_URL}/api/events`);
+//   const events = await res.json();
+
+//   const paths = events?.data?.map((item) => ({
+//     params: { slug: item?.attributes?.slug },
+//   }));
+
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// }
+
+// export async function getStaticProps({ params: { slug } }) {
+//   const res = await fetch(`${API_URL}/api/events/${slug}`);
+//   const singleEvent = await res.json();
+
+//   return {
+//     props: {
+//       event: singleEvent?.data,
+//     },
+//     revalidate: 1,
+//   };
+// }
