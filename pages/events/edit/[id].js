@@ -37,7 +37,9 @@ const EditEventPage = ({ event }) => {
   };
 
   useEffect(() => {
-    setPageLoading(false);
+    setTimeout(() => {
+      setPageLoading(false);
+    }, 500);
   }, [router?.query?.id]);
 
   return (
