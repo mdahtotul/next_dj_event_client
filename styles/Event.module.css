@@ -17,7 +17,7 @@
 
 .controls {
   position: absolute;
-  right: 30px;
+  right: 5px;
   top: 0;
 }
 
@@ -29,4 +29,25 @@
 .back {
   display: block;
   margin-top: 40px;
+}
+
+.load_controls {
+  display: grid;
+  grid-template-columns: repeat(2, 120px);
+  grid-gap: 15px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.load_date {
+  max-width: 310px;
+}
+
+.load_name {
+  max-width: 400px;
+}
+
+.load_img {
+  max-width: 960px;
 }

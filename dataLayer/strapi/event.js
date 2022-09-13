@@ -35,7 +35,6 @@ export const getEventBySlug = async ({ slug }) => {
 };
 
 export const getEventByName = async ({ name }) => {
-  console.log("name", name);
   const query = qs.stringify(
     {
       filters: {
