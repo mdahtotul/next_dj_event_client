@@ -1,3 +1,4 @@
+import ImageUpload from "@/components/ImageUpload";
 import Layout from "@/components/Layout";
 import Modal from "@/components/Modal";
 import { API_URL } from "@/config/index";
@@ -63,6 +64,18 @@ const EditEventPage = ({ event }) => {
     }
   };
 
+  const imageUploaded = async (e) => {
+    console.log("uploaded");
+
+    const res = await fetch(`${API_URL}/api/events/${event?.id}?populate=*`);
+    const data = await res.json();
+    console.log(data);
+    setImagePreview(
+      data?.data?.attributes?.image?.data?.attributes?.formats?.thumbnail?.url
+    );
+    setShowModal(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -109,6 +122,7 @@ const EditEventPage = ({ event }) => {
       <h1>Edit Event</h1>
 
       <ToastContainer theme="colored" />
+
       {pageLoading && (
         <>
           <div className={styles.grid}>
@@ -243,7 +257,7 @@ const EditEventPage = ({ event }) => {
           </div>
 
           <Modal show={showModal} onClose={() => setShowModal(false)}>
-            IMAGE UPLOAD
+            <ImageUpload evtId={event.id} imageUploaded={imageUploaded} />
           </Modal>
         </>
       )}
