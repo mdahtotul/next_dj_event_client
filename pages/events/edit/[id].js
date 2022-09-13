@@ -2,9 +2,11 @@ import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
 import styles from "@/styles/Form.module.css";
 import { Skeleton } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { FaImage } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
 const EditEventPage = ({ event }) => {
@@ -25,15 +27,21 @@ const EditEventPage = ({ event }) => {
   } = event?.attributes;
 
   const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    performers: "",
-    venue: "",
-    address: "",
-    date: "",
-    time: "",
-    description: "",
+    name: name,
+    slug: slug,
+    performers: performers,
+    venue: venue,
+    address: address,
+    date: date,
+    time: time,
+    description: description,
   });
+
+  const [imagePreview, setImagePreview] = useState(
+    image?.data?.attributes?.formats?.thumbnail?.url || null
+  );
+
+  console.log(formData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,8 +68,8 @@ const EditEventPage = ({ event }) => {
 
     const dataObj = { data: formData };
 
-    const res = await fetch(`${API_URL}/api/events`, {
-      method: "POST",
+    const res = await fetch(`${API_URL}/api/events/${event.id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -71,7 +79,7 @@ const EditEventPage = ({ event }) => {
     if (!res.ok) {
       toast.error(`Status Code: ${res.status} | ${res.statusText}`);
     } else {
-      toast.success(`Status Code: ${res.status} | Event added successfully!`);
+      toast.success(`Status Code: ${res.status} | Event update successfully!`);
       const resData = await res.json();
       const { slug } = resData?.data?.attributes;
 
@@ -118,98 +126,116 @@ const EditEventPage = ({ event }) => {
       {!pageLoading && event === null && <p>No event exist.</p>}
 
       {!pageLoading && event !== null && (
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.grid}>
+        <>
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.grid}>
+              <div>
+                <label htmlFor="name">
+                  Name <span className={styles.unique}>(Should be unique)</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData?.name}
+                  onChange={handleChange}
+                  onBlur={createSlug}
+                />
+              </div>
+              <div>
+                <label htmlFor="slug">Slug</label>
+                <input
+                  type="text"
+                  id="slug"
+                  name="slug"
+                  value={formData?.slug}
+                  onChange={handleChange}
+                  disabled
+                />
+              </div>
+              <div>
+                <label htmlFor="performers">Performers</label>
+                <input
+                  type="text"
+                  id="performers"
+                  name="performers"
+                  value={formData?.performers}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="venue">Venue</label>
+                <input
+                  type="text"
+                  id="venue"
+                  name="venue"
+                  value={formData?.venue}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="address">Address</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData?.address}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="date">Date</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={new Date(formData?.date).toISOString().slice(0, 10)}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="time">Time</label>
+                <input
+                  type="text"
+                  id="time"
+                  name="time"
+                  value={formData?.time}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
             <div>
-              <label htmlFor="name">
-                Name <span className={styles.unique}>(Should be unique)</span>
-              </label>
-              <input
+              <label htmlFor="description">Description</label>
+              <textarea
                 type="text"
-                id="name"
-                name="name"
-                value={formData?.name || name}
-                onChange={handleChange}
-                onBlur={createSlug}
-              />
-            </div>
-            <div>
-              <label htmlFor="slug">Slug</label>
-              <input
-                type="text"
-                id="slug"
-                name="slug"
-                value={formData?.slug || slug}
-                onChange={handleChange}
-                disabled
-              />
-            </div>
-            <div>
-              <label htmlFor="performers">Performers</label>
-              <input
-                type="text"
-                id="performers"
-                name="performers"
-                value={formData?.performers || performers}
+                id="description"
+                name="description"
+                value={formData?.description}
                 onChange={handleChange}
               />
             </div>
-            <div>
-              <label htmlFor="venue">Venue</label>
-              <input
-                type="text"
-                id="venue"
-                name="venue"
-                value={formData?.venue || venue}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="address">Address</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData?.address || address}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="date">Date</label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={
-                  formData?.date || new Date(date).toISOString().slice(0, 10)
-                }
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="time">Time</label>
-              <input
-                type="text"
-                id="time"
-                name="time"
-                value={formData?.time || time}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div>
-            <label htmlFor="description">Description</label>
-            <textarea
-              type="text"
-              id="description"
-              name="description"
-              value={formData?.description || description}
-              onChange={handleChange}
-            />
-          </div>
 
-          <input type="submit" value="Update Event" className="btn" />
-        </form>
+            <input type="submit" value="Update Event" className="btn" />
+          </form>
+          <h2>Image Preview</h2>
+          {imagePreview ? (
+            <Image src={imagePreview} height={100} width={170} />
+          ) : (
+            <div>
+              <p>No image uploaded</p>
+            </div>
+          )}
+          <div>
+            <button className="btn-secondary">
+              <FaImage
+                style={{
+                  marginRight: "5px",
+                }}
+              />
+              Set Image
+            </button>
+          </div>
+        </>
       )}
     </Layout>
   );

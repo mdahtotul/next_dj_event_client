@@ -39,9 +39,12 @@ h1 {
   opacity: 0.9;
 }
 
-.btn-seconday {
+.btn-secondary {
   font: inherit;
-  fzont-size: 13px;
+  display: flex;
+  align-items: center;
+  width: max-content;
+  font-size: 13px;
   background: #000;
   color: #fff !important;
   border: 0;
@@ -51,7 +54,7 @@ h1 {
   cursor: pointer;
 }
 
-.btn-seconday:hover {
+.btn-secondary:hover {
   opacity: 0.8;
 }
 
