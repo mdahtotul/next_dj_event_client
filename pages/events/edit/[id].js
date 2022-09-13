@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import Modal from "@/components/Modal";
 import { API_URL } from "@/config/index";
 import styles from "@/styles/Form.module.css";
 import { Skeleton } from "@mui/material";
@@ -41,7 +42,12 @@ const EditEventPage = ({ event }) => {
     image?.data?.attributes?.formats?.thumbnail?.url || null
   );
 
-  console.log(formData);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleModalShow = () => {
+    setShowModal(true);
+    window.scrollTo(0, 0);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +55,7 @@ const EditEventPage = ({ event }) => {
   };
 
   const createSlug = () => {
-    if (formData.name) {
+    if (formData?.name) {
       const slug = formData?.name.toLowerCase().replace(/ /g, "-");
       setFormData((prevState) => ({ ...prevState, slug }));
     } else {
@@ -226,7 +232,7 @@ const EditEventPage = ({ event }) => {
             </div>
           )}
           <div>
-            <button className="btn-secondary">
+            <button onClick={handleModalShow} className="btn-secondary">
               <FaImage
                 style={{
                   marginRight: "5px",
@@ -235,6 +241,10 @@ const EditEventPage = ({ event }) => {
               Set Image
             </button>
           </div>
+
+          <Modal show={showModal} onClose={() => setShowModal(false)}>
+            IMAGE UPLOAD
+          </Modal>
         </>
       )}
     </Layout>
