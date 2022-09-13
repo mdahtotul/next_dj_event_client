@@ -1,12 +1,10 @@
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
-import styles from "@/styles/Event.module.css";
+import styles from "@/styles/Form.module.css";
 import { Skeleton } from "@mui/material";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import * as FaIcons from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
 const EditEventPage = ({ event }) => {
@@ -14,24 +12,73 @@ const EditEventPage = ({ event }) => {
 
   const [pageLoading, setPageLoading] = useState(true);
 
-  const { name, date, time, image, address, performers, venue, description } =
-    event?.attributes;
+  const {
+    name,
+    slug,
+    date,
+    time,
+    image,
+    address,
+    performers,
+    venue,
+    description,
+  } = event?.attributes;
 
-  const deleteEvent = async (eventId) => {
-    if (confirm("Are you sure?")) {
-      const res = await fetch(`${API_URL}/api/events/${eventId}`, {
-        method: "DELETE",
-      });
+  const [formData, setFormData] = useState({
+    name: "",
+    slug: "",
+    performers: "",
+    venue: "",
+    address: "",
+    date: "",
+    time: "",
+    description: "",
+  });
 
-      const data = await res.json();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
 
-      if (!res.ok) {
-        toast.error(`Status Code: ${res.status} | ${data.message}`);
+  const createSlug = () => {
+    if (formData.name) {
+      const slug = formData?.name.toLowerCase().replace(/ /g, "-");
+      setFormData((prevState) => ({ ...prevState, slug }));
+    } else {
+      setFormData((prevState) => ({ ...prevState, slug: "" }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const hasEmptyFields = Object.values(formData).some((elem) => elem === "");
+    if (hasEmptyFields) {
+      toast.error("Please fill up all fields");
+      return;
+    }
+
+    const dataObj = { data: formData };
+
+    const res = await fetch(`${API_URL}/api/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataObj),
+    });
+
+    if (!res.ok) {
+      toast.error(`Status Code: ${res.status} | ${res.statusText}`);
+    } else {
+      toast.success(`Status Code: ${res.status} | Event added successfully!`);
+      const resData = await res.json();
+      const { slug } = resData?.data?.attributes;
+
+      if (slug) {
+        router.push(`/events/${slug}`);
       } else {
-        toast.success(
-          `Status Code: ${res.status} | Event deleted successfully!`
-        );
-        router.push("/events");
+        router.push(`/events`);
       }
     }
   };
@@ -43,106 +90,126 @@ const EditEventPage = ({ event }) => {
   }, [router?.query?.id]);
 
   return (
-    <Layout title="Single Event">
+    <Layout title="Edit New Event">
+      <Link href="/events">Go Back</Link>
+      <h1>Edit Event</h1>
+
       <ToastContainer theme="colored" />
       {pageLoading && (
-        <div className={styles.event}>
-          <div className={styles.load_controls}>
-            <Skeleton />
-            <Skeleton />
-          </div>
-          <div className={styles.load_date}>
-            <Skeleton />
-          </div>
-          <div className={styles.load_name}>
-            <Skeleton height={80} />
-          </div>
-          <div className={styles.load_img}>
-            <Skeleton variant="rectangular" height={600} />
-          </div>
-          <div className={styles.load_name}>
-            <Skeleton height={80} />
+        <>
+          <div className={styles.grid}>
+            {[...Array(7)].map((_, i) => (
+              <div key={i}>
+                <Skeleton width={150} height={35} />
+                <Skeleton variant="rectangular" height={45} />
+              </div>
+            ))}
           </div>
           <div>
-            <Skeleton />
-          </div>
-          <div className={styles.load_name}>
-            <Skeleton height={80} />
+            <Skeleton width={150} />
+            <Skeleton variant="rectangular" height={200} />
           </div>
           <div>
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
+            <Skeleton height={60} />
           </div>
-          <div className={styles.load_name}>
-            <Skeleton height={80} />
-          </div>
-          <div>
-            <Skeleton />
-          </div>
-          <div>
-            <Skeleton width={100} />
-          </div>
-        </div>
+        </>
       )}
 
       {!pageLoading && event === null && <p>No event exist.</p>}
 
       {!pageLoading && event !== null && (
-        <div className={styles.event}>
-          <div className={styles.controls}>
-            <Link href={`/events/edit/${event?.id}`}>
-              <a>
-                {" "}
-                <FaIcons.FaPencilAlt /> Edit Event{" "}
-              </a>
-            </Link>
-            <a
-              href="#"
-              className={styles.delete}
-              onClick={() => deleteEvent(event?.id)}
-            >
-              <FaIcons.FaTimes /> Delete Event
-            </a>
-          </div>
-
-          <span>
-            {date &&
-              new Date(date).toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}{" "}
-            at {time}{" "}
-          </span>
-          <h1>{name}</h1>
-          {image && (
-            <div className={styles.image}>
-              <Image
-                src={
-                  image?.data?.attributes?.formats?.medium?.url
-                    ? image?.data?.attributes?.formats?.medium?.url
-                    : "/images/event-default.png"
-                }
-                alt={name}
-                width={960}
-                height={600}
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.grid}>
+            <div>
+              <label htmlFor="name">
+                Name <span className={styles.unique}>(Should be unique)</span>
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData?.name || name}
+                onChange={handleChange}
+                onBlur={createSlug}
               />
             </div>
-          )}
+            <div>
+              <label htmlFor="slug">Slug</label>
+              <input
+                type="text"
+                id="slug"
+                name="slug"
+                value={formData?.slug || slug}
+                onChange={handleChange}
+                disabled
+              />
+            </div>
+            <div>
+              <label htmlFor="performers">Performers</label>
+              <input
+                type="text"
+                id="performers"
+                name="performers"
+                value={formData?.performers || performers}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="venue">Venue</label>
+              <input
+                type="text"
+                id="venue"
+                name="venue"
+                value={formData?.venue || venue}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="address">Address</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={formData?.address || address}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="date">Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={
+                  formData?.date || new Date(date).toISOString().slice(0, 10)
+                }
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="time">Time</label>
+              <input
+                type="text"
+                id="time"
+                name="time"
+                value={formData?.time || time}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="description">Description</label>
+            <textarea
+              type="text"
+              id="description"
+              name="description"
+              value={formData?.description || description}
+              onChange={handleChange}
+            />
+          </div>
 
-          <h3>Performers</h3>
-          <p>{performers}</p>
-          <h3>Description</h3>
-          <p>{description}</p>
-          <h3>Venue: {venue}</h3>
-          <p>{address}</p>
-
-          <Link href="/events">
-            <a className={styles.back}> {"<"}Go Back</a>
-          </Link>
-        </div>
+          <input type="submit" value="Update Event" className="btn" />
+        </form>
       )}
     </Layout>
   );

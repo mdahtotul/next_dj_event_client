@@ -71,7 +71,7 @@ const AddEventPage = () => {
   return (
     <Layout title="Add New Event">
       <Link href="/events">Go Back</Link>
-      <h1>Add Event </h1>
+      <h1>Add Event</h1>
 
       <ToastContainer theme="colored" />
 
@@ -79,7 +79,7 @@ const AddEventPage = () => {
         <div className={styles.grid}>
           <div>
             <label htmlFor="name">
-              Name ({`Don't use same name multiple times!`})
+              Name <span className={styles.unique}>(Should be unique)</span>
             </label>
             <input
               type="text"

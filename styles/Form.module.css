@@ -27,6 +27,10 @@
   padding: 10px;
 }
 
+.unique {
+  color: red;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
