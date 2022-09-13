@@ -1,5 +1,3 @@
-import { getEventByName } from "dataLayer/strapi/event";
-
 // HACK: before testing api import function from "dataLayer/strapi/event"
 // export default async function handler(req, res) {
 //   const data = await getEventsSlugs();
@@ -7,24 +5,22 @@ import { getEventByName } from "dataLayer/strapi/event";
 // }
 
 // NOTE: test done for getting query by event slug
-// import {getEventBySlug} from "dataLayer/strapi/event";
-// export default async function handler(req, res) {
-//   const slugArr = Object.keys(req.query);
-//   const slug = slugArr[0];
-//   const data = await getEventBySlug({
-//     slug: slug,
-//   });
-//   res.status(200).json(data);
-// }
-
-// NOTE: test done for getting query by event name
-// import {getEventByName} from "dataLayer/strapi/event";
+import { getEventBySlug } from "dataLayer/strapi/event";
 export default async function handler(req, res) {
-  const data = await getEventByName({
-    name: "Throwback",
+  const data = await getEventBySlug({
+    slug: "throwback-thursdays-with-dj-manny-duke",
   });
   res.status(200).json(data);
 }
+
+// NOTE: test done for getting query by event name
+// import {getEventByName} from "dataLayer/strapi/event";
+// export default async function handler(req, res) {
+//   const data = await getEventByName({
+//     name: "Throwback",
+//   });
+//   res.status(200).json(data);
+// }
 
 // NOTE: test done for getting event users_permissions email
 // import {getEventByUser} from "dataLayer/strapi/event";
