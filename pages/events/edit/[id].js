@@ -65,8 +65,6 @@ const EditEventPage = ({ event }) => {
   };
 
   const imageUploaded = async (e) => {
-    console.log("uploaded");
-
     const res = await fetch(`${API_URL}/api/events/${event?.id}?populate=*`);
     const data = await res.json();
     console.log(data);
@@ -111,9 +109,7 @@ const EditEventPage = ({ event }) => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      setPageLoading(false);
-    }, 500);
+    setPageLoading(false);
   }, [router?.query?.id]);
 
   return (
