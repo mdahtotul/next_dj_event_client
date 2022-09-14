@@ -67,7 +67,6 @@ const EditEventPage = ({ event }) => {
   const imageUploaded = async (e) => {
     const res = await fetch(`${API_URL}/api/events/${event?.id}?populate=*`);
     const data = await res.json();
-    console.log(data);
     setImagePreview(
       data?.data?.attributes?.image?.data?.attributes?.formats?.thumbnail?.url
     );
@@ -238,6 +237,7 @@ const EditEventPage = ({ event }) => {
             <Image src={imagePreview} height={100} width={170} />
           ) : (
             <div>
+              <Image src="/images/event-default.png" height={100} width={170} />
               <p>No image uploaded</p>
             </div>
           )}

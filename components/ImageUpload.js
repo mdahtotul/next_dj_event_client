@@ -1,19 +1,29 @@
 import styles from "@/styles/Form.module.css";
+import Image from "next/image";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { blobToDataURL } from "utils/handleBlobFiles";
 import { API_URL } from "../config";
 
 const ImageUpload = ({ evtId, imageUploaded }) => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const handleFileChange = (e) => {
-    // console.log(e.target.files[0]);
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file.size <= 160446) {
+      blobToDataURL(file, setImagePreview);
+      setImage(file);
+    } else {
+      toast.error("Image size is too big. Max size is 150kb");
+      return;
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     toast.info("Uploading image...");
 
@@ -30,7 +40,6 @@ const ImageUpload = ({ evtId, imageUploaded }) => {
     });
 
     if (res.ok) {
-      console.log(res);
       imageUploaded();
       setLoading(false);
       toast.success(
@@ -49,6 +58,19 @@ const ImageUpload = ({ evtId, imageUploaded }) => {
 
       <form onSubmit={handleSubmit}>
         <div className={styles.file}>
+          {imagePreview && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <Image src={imagePreview?.file} width={270} height={200} alt="" />
+            </div>
+          )}
           <input
             type="file"
             name="file"

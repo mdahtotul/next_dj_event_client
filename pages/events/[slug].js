@@ -122,11 +122,15 @@ const SingleEventPage = ({ event }) => {
               <div className={styles.image}>
                 <Image
                   src={
-                    x?.attributes?.image?.data?.attributes?.formats?.medium?.url
-                      ? x?.attributes?.image?.data?.attributes?.formats?.medium
-                          ?.url
-                      : "/images/event-default.png"
+                    x?.attributes?.image?.data?.attributes?.url ||
+                    "/images/event-default.png"
                   }
+                  // src={
+                  //   x?.attributes?.image?.data?.attributes?.formats?.medium?.url
+                  //     ? x?.attributes?.image?.data?.attributes?.formats?.medium
+                  //         ?.url
+                  //     : "/images/event-default.png"
+                  // }
                   alt={x?.attributes?.name}
                   width={960}
                   height={600}
