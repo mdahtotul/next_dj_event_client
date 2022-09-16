@@ -1,12 +1,14 @@
 import styles from "@/styles/Search.module.css";
 import { getEventByName } from "dataLayer/strapi/event";
 import { useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import SearchEvent from "./SearchEvent";
 
 const Search = () => {
   const [term, setTerm] = useState("");
   const [searchEvents, setSearchEvent] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
+  const [showSearchField, setShowSearchField] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,9 +35,16 @@ const Search = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
+          className={showSearchField ? styles.active : ""}
           value={term}
           onChange={(e) => setTerm(e.target.value)}
+          onBlur={handleSubmit}
           placeholder="Search events"
+        />
+        <FaSearch
+          title={showSearchField ? "Close search" : "Open search"}
+          className={styles.icon}
+          onClick={() => setShowSearchField(!showSearchField)}
         />
       </form>
       {showSearch && searchEvents?.length > 0 && (
