@@ -1,10 +1,12 @@
+import { useAuthContext } from "@/context/AuthContext";
 import styles from "@/styles/Header.module.css";
-
 import Link from "next/link";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import Search from "./Search";
 
-const Header = ({ loggedIn = true }) => {
+const Header = () => {
+  const { logout, user } = useAuthContext();
+
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
@@ -23,28 +25,41 @@ const Header = ({ loggedIn = true }) => {
               <a>Events</a>
             </Link>
           </li>
-          <li>
-            {" "}
-            <Link href="/events/add">
-              <a>Add Event</a>
-            </Link>
-          </li>
-          <li>
-            {!loggedIn ? (
-              <Link href="/account/login">
-                <a className="btn-secondary btn-icon">
-                  {" "}
-                  <FaSignInAlt /> Login
-                </a>
-              </Link>
-            ) : (
-              <Link href="/account/login">
-                <a className="btn-secondary btn-icon">
+          {user ? (
+            <>
+              <li>
+                {" "}
+                <Link href="/events/add">
+                  <a>Add Event</a>
+                </Link>
+              </li>
+              <li>
+                {" "}
+                <Link href="/account/dashboard">
+                  <a>Dashboard</a>
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={() => logout()}
+                  className="btn-secondary btn-icon"
+                >
                   <FaSignOutAlt /> Logout
-                </a>
-              </Link>
-            )}
-          </li>
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link href="/account/login">
+                  <a className="btn-secondary btn-icon">
+                    {" "}
+                    <FaSignInAlt /> Login
+                  </a>
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </header>
