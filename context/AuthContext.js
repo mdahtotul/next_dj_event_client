@@ -5,6 +5,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [jwt, setJwt] = useState("");
   const [error, setError] = useState({
     status: "",
     msg: "",
@@ -12,12 +13,12 @@ const AuthProvider = ({ children }) => {
 
   // Register user
   const register = async ({ user }) => {
+    // 'http://localhost:1337/api/auth/local/register'
     console.log("register", user);
   };
 
   // Login user
   const login = async ({ email: identifier, password }) => {
-    console.log("login", { identifier, password });
     const res = await fetch(`${API_URL}/api/auth/local`, {
       method: "POST",
       headers: {
@@ -30,6 +31,7 @@ const AuthProvider = ({ children }) => {
 
     if (res.ok) {
       setUser(data.user);
+      setJwt(data.jwt);
       setError(null);
     } else {
       setUser(null);
@@ -39,8 +41,6 @@ const AuthProvider = ({ children }) => {
       });
     }
   };
-
-  console.log("auth user", user);
 
   // logout user
   const logout = async () => {
