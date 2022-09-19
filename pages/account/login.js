@@ -22,6 +22,12 @@ const LoginPage = () => {
     setInputData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    login({ email: inputData?.email, password: inputData?.password });
+  };
+
   useEffect(() => {
     if (error?.status || error?.msg) {
       if (error?.status) {
@@ -31,12 +37,6 @@ const LoginPage = () => {
       }
     }
   }, [error]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    login({ email: inputData?.email, password: inputData?.password });
-  };
 
   return (
     <Layout title="Login">

@@ -1,11 +1,12 @@
-import { createContext, useContext, useState } from "react";
-import { API_URL } from "../config";
+import { useRouter } from "next/router";
+import { createContext, useContext, useEffect, useState } from "react";
+import { NEXT_URL } from "../config";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const router = useRouter();
   const [user, setUser] = useState(null);
-  const [jwt, setJwt] = useState("");
   const [error, setError] = useState({
     status: "",
     msg: "",
@@ -19,38 +20,56 @@ const AuthProvider = ({ children }) => {
 
   // Login user
   const login = async ({ email: identifier, password }) => {
-    const res = await fetch(`${API_URL}/api/auth/local`, {
+    const res = await fetch(`${NEXT_URL}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ identifier, password }),
+      body: JSON.stringify({
+        identifier,
+        password,
+      }),
     });
 
     const data = await res.json();
 
-    if (res.ok) {
+    if (!data.error) {
       setUser(data.user);
-      setJwt(data.jwt);
       setError(null);
+      router.push("/account/dashboard");
     } else {
       setUser(null);
-      setError({
-        status: data?.error?.status,
-        msg: data?.error?.message,
-      });
+      setError(data?.error);
     }
   };
 
   // logout user
   const logout = async () => {
-    console.log("logout");
+    const res = await fetch(`${NEXT_URL}/api/logout`, {
+      method: "POST",
+    });
+
+    if (res.ok) {
+      setUser(null);
+      router.push("/");
+    }
   };
 
   // Check if user is logged in
   const checkUserLoggedIn = async () => {
-    console.log("checkUserLoggedIn");
+    const res = await fetch(`${NEXT_URL}/api/user`);
+    const data = await res.json();
+
+    if (res.ok) {
+      setUser(data.user);
+    } else {
+      setUser(null);
+    }
   };
+
+  useEffect(() => {
+    checkUserLoggedIn();
+  }, []);
 
   return (
     <AuthContext.Provider
