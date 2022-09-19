@@ -13,9 +13,29 @@ const AuthProvider = ({ children }) => {
   });
 
   // Register user
-  const register = async ({ user }) => {
-    // 'http://localhost:1337/api/auth/local/register'
-    console.log("register", user);
+  const register = async ({ username, email, password }) => {
+    const res = await fetch(`${NEXT_URL}/api/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!data.error) {
+      setUser(data.user);
+      setError(null);
+      router.push("/account/dashboard");
+    } else {
+      setUser(null);
+      setError(data?.error);
+    }
   };
 
   // Login user

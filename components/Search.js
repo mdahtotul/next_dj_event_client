@@ -20,7 +20,7 @@ const Search = () => {
         .then((res) => {
           setSearchEvent(res?.data);
         })
-        .catch((err) => console.log("error in line 18", err));
+        .catch((err) => console.log("error in line 18 Search.js", err));
 
       setTerm("");
       setShowSearch(true);
