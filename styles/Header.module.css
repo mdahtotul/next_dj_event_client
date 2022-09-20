@@ -1,4 +1,8 @@
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -7,6 +11,7 @@
   padding: 0 30px;
   background: linear-gradient(145deg, #e6e6e6, #ffffff);
   box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+  z-index: 1000;
 }
 
 .header a {

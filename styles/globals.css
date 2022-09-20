@@ -25,6 +25,10 @@ h1 {
   margin-bottom: 20px;
 }
 
+.empty {
+  height: 65px;
+}
+
 .btn {
   display: inline-block;
   background: red;

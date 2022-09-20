@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import * as FaIcons from "react-icons/fa";
+import { FaPencilAlt, FaTimes } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
 const SingleEventPage = ({ event, token }) => {
@@ -25,10 +25,12 @@ const SingleEventPage = ({ event, token }) => {
         },
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        toast.error(`Status Code: ${res.status} | ${data.message}`);
+        if (res.status === 403 || res.status === 401) {
+          toast.error(`Status Code: ${res.status} | Need Authorization!`);
+          return;
+        }
+        toast.error(`Status Code: ${res.status} | Couldn't delete event!`);
       } else {
         toast.success(
           `Status Code: ${res.status} | Event deleted successfully!`
@@ -99,7 +101,7 @@ const SingleEventPage = ({ event, token }) => {
               <Link href={`/events/edit/${x?.id}`}>
                 <a>
                   {" "}
-                  <FaIcons.FaPencilAlt /> Edit Event{" "}
+                  <FaPencilAlt /> Edit Event
                 </a>
               </Link>
               <a
@@ -107,7 +109,7 @@ const SingleEventPage = ({ event, token }) => {
                 className={styles.delete}
                 onClick={() => deleteEvent(x?.id)}
               >
-                <FaIcons.FaTimes /> Delete Event
+                <FaTimes /> Delete Event
               </a>
             </div>
 
@@ -129,12 +131,6 @@ const SingleEventPage = ({ event, token }) => {
                     x?.attributes?.image?.data?.attributes?.url ||
                     "/images/event-default.png"
                   }
-                  // src={
-                  //   x?.attributes?.image?.data?.attributes?.formats?.medium?.url
-                  //     ? x?.attributes?.image?.data?.attributes?.formats?.medium
-                  //         ?.url
-                  //     : "/images/event-default.png"
-                  // }
                   alt={x?.attributes?.name}
                   width={960}
                   height={600}
@@ -170,7 +166,7 @@ export async function getServerSideProps({ params, req }) {
   return {
     props: {
       event: singleEvent?.data,
-      token,
+      token: token || null,
     },
   };
 }

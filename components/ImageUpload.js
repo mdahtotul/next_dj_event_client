@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { blobToDataURL } from "utils/handleBlobFiles";
 import { API_URL } from "../config";
 
-const ImageUpload = ({ evtId, imageUploaded }) => {
+const ImageUpload = ({ evtId, imageUploaded, token }) => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -36,6 +36,9 @@ const ImageUpload = ({ evtId, imageUploaded }) => {
     const url = `${API_URL}/api/upload`;
     const res = await fetch(url, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: formData,
     });
 

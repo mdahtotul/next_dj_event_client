@@ -19,6 +19,7 @@ const Layout = ({ title, keywords, description, children }) => {
       </Head>
 
       <Header />
+      <div className="empty"></div>
 
       {pathname === "/" && <Showcase />}
 

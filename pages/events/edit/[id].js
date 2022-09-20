@@ -1,5 +1,6 @@
 import ImageUpload from "@/components/ImageUpload";
 import Layout from "@/components/Layout";
+import LoginFirst from "@/components/LoginFirst";
 import Modal from "@/components/Modal";
 import { API_URL } from "@/config/index";
 import { parseCookies } from "@/helpers/index";
@@ -95,7 +96,11 @@ const EditEventPage = ({ event, token }) => {
     });
 
     if (!res.ok) {
-      toast.error(`Status Code: ${res.status} | ${res.statusText}`);
+      if (res.status === 403 || res.status === 401) {
+        toast.error(`Status Code: ${res.status} | Need Authorization!`);
+        return;
+      }
+      toast.error(`Status Code: ${res.status} | Couldn't update event!`);
     } else {
       toast.success(`Status Code: ${res.status} | Event update successfully!`);
       const resData = await res.json();
@@ -114,152 +119,172 @@ const EditEventPage = ({ event, token }) => {
   }, [router?.query?.id]);
 
   return (
-    <Layout title="Edit New Event">
-      <Link href="/events">Go Back</Link>
-      <h1>Edit Event</h1>
+    <>
+      {token ? (
+        <Layout title="Edit New Event">
+          <Link href="/events">Go Back</Link>
+          <h1>Edit Event</h1>
 
-      <ToastContainer theme="colored" />
+          <ToastContainer theme="colored" />
 
-      {pageLoading && (
-        <>
-          <div className={styles.grid}>
-            {[...Array(7)].map((_, i) => (
-              <div key={i}>
-                <Skeleton width={150} height={35} />
-                <Skeleton variant="rectangular" height={45} />
-              </div>
-            ))}
-          </div>
-          <div>
-            <Skeleton width={150} />
-            <Skeleton variant="rectangular" height={200} />
-          </div>
-          <div>
-            <Skeleton height={60} />
-          </div>
-        </>
-      )}
-
-      {!pageLoading && event === null && <p>No event exist.</p>}
-
-      {!pageLoading && event !== null && (
-        <>
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <div className={styles.grid}>
-              <div>
-                <label htmlFor="name">
-                  Name <span className={styles.unique}>(Should be unique)</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData?.name}
-                  onChange={handleChange}
-                  onBlur={createSlug}
-                />
+          {pageLoading && (
+            <>
+              <div className={styles.grid}>
+                {[...Array(7)].map((_, i) => (
+                  <div key={i}>
+                    <Skeleton width={150} height={35} />
+                    <Skeleton variant="rectangular" height={45} />
+                  </div>
+                ))}
               </div>
               <div>
-                <label htmlFor="slug">Slug</label>
-                <input
-                  type="text"
-                  id="slug"
-                  name="slug"
-                  value={formData?.slug}
-                  onChange={handleChange}
-                  disabled
-                />
+                <Skeleton width={150} />
+                <Skeleton variant="rectangular" height={200} />
               </div>
               <div>
-                <label htmlFor="performers">Performers</label>
-                <input
-                  type="text"
-                  id="performers"
-                  name="performers"
-                  value={formData?.performers}
-                  onChange={handleChange}
-                />
+                <Skeleton height={60} />
               </div>
-              <div>
-                <label htmlFor="venue">Venue</label>
-                <input
-                  type="text"
-                  id="venue"
-                  name="venue"
-                  value={formData?.venue}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="address">Address</label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={formData?.address}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="date">Date</label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  value={new Date(formData?.date).toISOString().slice(0, 10)}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="time">Time</label>
-                <input
-                  type="text"
-                  id="time"
-                  name="time"
-                  value={formData?.time}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="description">Description</label>
-              <textarea
-                type="text"
-                id="description"
-                name="description"
-                value={formData?.description}
-                onChange={handleChange}
-              />
-            </div>
-
-            <input type="submit" value="Update Event" className="btn" />
-          </form>
-          <h2>Image Preview</h2>
-          {imagePreview ? (
-            <Image src={imagePreview} height={100} width={170} />
-          ) : (
-            <div>
-              <Image src="/images/event-default.png" height={100} width={170} />
-              <p>No image uploaded</p>
-            </div>
+            </>
           )}
-          <div>
-            <button onClick={handleModalShow} className="btn-secondary">
-              <FaImage
-                style={{
-                  marginRight: "5px",
-                }}
-              />
-              Set Image
-            </button>
-          </div>
 
-          <Modal show={showModal} onClose={() => setShowModal(false)}>
-            <ImageUpload evtId={event.id} imageUploaded={imageUploaded} />
-          </Modal>
-        </>
+          {!pageLoading && event === null && <p>No event exist.</p>}
+
+          {!pageLoading && event !== null && (
+            <>
+              <form className={styles.form} onSubmit={handleSubmit}>
+                <div className={styles.grid}>
+                  <div>
+                    <label htmlFor="name">
+                      Name{" "}
+                      <span className={styles.unique}>(Should be unique)</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData?.name}
+                      onChange={handleChange}
+                      onBlur={createSlug}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="slug">Slug</label>
+                    <input
+                      type="text"
+                      id="slug"
+                      name="slug"
+                      value={formData?.slug}
+                      onChange={handleChange}
+                      disabled
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="performers">Performers</label>
+                    <input
+                      type="text"
+                      id="performers"
+                      name="performers"
+                      value={formData?.performers}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="venue">Venue</label>
+                    <input
+                      type="text"
+                      id="venue"
+                      name="venue"
+                      value={formData?.venue}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address">Address</label>
+                    <input
+                      type="text"
+                      id="address"
+                      name="address"
+                      value={formData?.address}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="date">Date</label>
+                    <input
+                      type="date"
+                      id="date"
+                      name="date"
+                      value={new Date(formData?.date)
+                        .toISOString()
+                        .slice(0, 10)}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="time">Time</label>
+                    <input
+                      type="text"
+                      id="time"
+                      name="time"
+                      value={formData?.time}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="description">Description</label>
+                  <textarea
+                    type="text"
+                    id="description"
+                    name="description"
+                    value={formData?.description}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <input type="submit" value="Update Event" className="btn" />
+              </form>
+              <h2>Image Preview</h2>
+              {imagePreview ? (
+                <Image src={imagePreview} height={100} width={170} />
+              ) : (
+                <div>
+                  <Image
+                    src="/images/event-default.png"
+                    height={100}
+                    width={170}
+                  />
+                  <p>No image uploaded</p>
+                </div>
+              )}
+              <div>
+                <button onClick={handleModalShow} className="btn-secondary">
+                  <FaImage
+                    style={{
+                      marginRight: "5px",
+                    }}
+                  />
+                  Set Image
+                </button>
+              </div>
+
+              <Modal show={showModal} onClose={() => setShowModal(false)}>
+                <ImageUpload
+                  evtId={event.id}
+                  imageUploaded={imageUploaded}
+                  token={token}
+                />
+              </Modal>
+            </>
+          )}
+        </Layout>
+      ) : (
+        <Layout title="Unauthorized">
+          {" "}
+          <LoginFirst />{" "}
+        </Layout>
       )}
-    </Layout>
+    </>
   );
 };
 
@@ -275,7 +300,7 @@ export async function getServerSideProps({ params, req }) {
   return {
     props: {
       event: singleEvent?.data,
-      token,
+      token: token || null,
     },
   };
 }
