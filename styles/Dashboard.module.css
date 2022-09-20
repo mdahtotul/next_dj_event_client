@@ -1,10 +1,38 @@
+.dash {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.owner {
+  display: flex;
+  align-items: center;
+}
+
+.owner p {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+}
+
+.owner span {
+  display: inline-block;
+  padding: 0 5px;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  color: #777;
+  margin-left: 5px;
+  font-size: 13px;
+}
+
 .dash h1 span {
   font-size: 20px;
   color: #777;
   margin-left: 10px;
 }
 
-.dash h3 {
+.h3 {
   font-size: 25px;
   color: #f00;
 }

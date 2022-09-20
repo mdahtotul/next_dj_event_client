@@ -15,8 +15,6 @@ const Header = () => {
         </Link>
       </div>
 
-      <Search />
-
       <nav>
         <ul>
           <li>
@@ -39,6 +37,9 @@ const Header = () => {
                   <a>Dashboard</a>
                 </Link>
               </li>
+
+              <Search />
+
               <li>
                 <button
                   onClick={() => logout()}
@@ -50,6 +51,7 @@ const Header = () => {
             </>
           ) : (
             <>
+              <Search />
               <li>
                 <Link href="/account/login">
                   <a className="btn-secondary btn-icon">

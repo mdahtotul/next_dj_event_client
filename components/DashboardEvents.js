@@ -3,19 +3,18 @@ import Link from "next/link";
 import { FaPencilAlt, FaTimes } from "react-icons/fa";
 
 const DashboardEvents = ({ eventProps, handleDelete }) => {
-  console.log("evt", eventProps);
-
   const { id, attributes } = eventProps;
   const { name, slug, performers, venue, address, date, time, image } =
     attributes;
 
   return (
     <div className={styles.event}>
-      <h4>
+      <h4 title="Go to event">
         <Link href={`/events/${slug}`}>
           <a>{name}</a>
         </Link>
       </h4>
+      {date && <small>{new Date(date).toDateString()}</small>}
 
       <Link href={`/events/edit/${id}`}>
         <a className={styles.edit}>
