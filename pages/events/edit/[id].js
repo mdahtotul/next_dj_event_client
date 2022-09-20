@@ -2,6 +2,7 @@ import ImageUpload from "@/components/ImageUpload";
 import Layout from "@/components/Layout";
 import Modal from "@/components/Modal";
 import { API_URL } from "@/config/index";
+import { parseCookies } from "@/helpers/index";
 import styles from "@/styles/Form.module.css";
 import { Skeleton } from "@mui/material";
 import Image from "next/image";
@@ -11,7 +12,7 @@ import { useEffect, useState } from "react";
 import { FaImage } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
-const EditEventPage = ({ event }) => {
+const EditEventPage = ({ event, token }) => {
   const router = useRouter();
 
   const [pageLoading, setPageLoading] = useState(true);
@@ -88,6 +89,7 @@ const EditEventPage = ({ event }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(dataObj),
     });
@@ -264,13 +266,16 @@ const EditEventPage = ({ event }) => {
 export default EditEventPage;
 
 // server side and static generation both are working now
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
+  const { token } = parseCookies(req);
+
   const res = await fetch(`${API_URL}/api/events/${params.id}?populate=*`);
   const singleEvent = await res.json();
 
   return {
     props: {
       event: singleEvent?.data,
+      token,
     },
   };
 }

@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
+import { parseCookies } from "@/helpers/index";
 import styles from "@/styles/Event.module.css";
 import Skeleton from "@mui/material/Skeleton";
 import { getEventBySlug } from "dataLayer/strapi/event";
@@ -10,7 +11,7 @@ import { useEffect, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 
-const SingleEventPage = ({ event }) => {
+const SingleEventPage = ({ event, token }) => {
   const router = useRouter();
 
   const [pageLoading, setPageLoading] = useState(true);
@@ -19,6 +20,9 @@ const SingleEventPage = ({ event }) => {
     if (confirm("Are you sure?")) {
       const res = await fetch(`${API_URL}/api/events/${eventId}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const data = await res.json();
@@ -157,7 +161,8 @@ const SingleEventPage = ({ event }) => {
 export default SingleEventPage;
 
 // server side and static generation both are working now
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
+  const { token } = parseCookies(req);
   const singleEvent = await getEventBySlug({
     slug: params?.slug,
   });
@@ -165,6 +170,7 @@ export async function getServerSideProps({ params }) {
   return {
     props: {
       event: singleEvent?.data,
+      token,
     },
   };
 }

@@ -1,12 +1,13 @@
 import Layout from "@/components/Layout";
 import { API_URL } from "@/config/index";
+import { parseCookies } from "@/helpers/index";
 import styles from "@/styles/Form.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
-const AddEventPage = () => {
+const AddEventPage = ({ token }) => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -49,6 +50,7 @@ const AddEventPage = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(dataObj),
     });
@@ -58,7 +60,8 @@ const AddEventPage = () => {
     } else {
       toast.success(`Status Code: ${res.status} | Event added successfully!`);
       const resData = await res.json();
-      const { slug } = resData?.data?.attributes;
+
+      const { slug } = resData;
 
       if (slug) {
         router.push(`/events/${slug}`);
@@ -170,3 +173,13 @@ const AddEventPage = () => {
 };
 
 export default AddEventPage;
+
+export async function getServerSideProps({ req }) {
+  const { token } = parseCookies(req);
+
+  return {
+    props: {
+      token,
+    },
+  };
+}
