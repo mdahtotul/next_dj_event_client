@@ -246,13 +246,14 @@ const EditEventPage = ({ event, token }) => {
               </form>
               <h2>Image Preview</h2>
               {imagePreview ? (
-                <Image src={imagePreview} height={100} width={170} />
+                <Image src={imagePreview} height={100} width={170} alt="" />
               ) : (
                 <div>
                   <Image
                     src="/images/event-default.png"
                     height={100}
                     width={170}
+                    alt=""
                   />
                   <p>No image uploaded</p>
                 </div>
