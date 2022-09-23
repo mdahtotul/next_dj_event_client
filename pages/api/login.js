@@ -1,7 +1,28 @@
 import { API_URL } from "@/config/index";
 import cookie from "cookie";
 
-export default async (req, res) => {
+const allowCors = (fn) => async (req, res) => {
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
+
+  // Handle CORS pre-flight
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
+  return await fn(req, res);
+};
+
+const handler = async (req, res) => {
   if (req.method === "POST") {
     const { identifier, password } = req.body;
 
@@ -9,11 +30,6 @@ export default async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Methods": "POST",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
-        "Access-Control-Allow-Headers":
-          "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
       },
       body: JSON.stringify({
         identifier,
@@ -49,3 +65,5 @@ export default async (req, res) => {
     res.status(405).json({ message: `Method ${req.method} not allowed` });
   }
 };
+
+module.exports = allowCors(handler);
