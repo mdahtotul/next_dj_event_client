@@ -10,7 +10,6 @@ import { toast, ToastContainer } from "react-toastify";
 
 const LoginPage = () => {
   const { user, login, error } = useAuthContext();
-  console.log(user);
 
   const [inputData, setInputData] = useState({
     email: "",

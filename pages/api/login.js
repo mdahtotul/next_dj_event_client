@@ -9,6 +9,7 @@ export default async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Methods": "POST",
       },
       body: JSON.stringify({
         identifier,

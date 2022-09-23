@@ -2,6 +2,7 @@
   "name": "dj_events_client",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://dj-events-api.herokuapp.com",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
