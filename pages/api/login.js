@@ -14,7 +14,11 @@ const allowCors = (fn) => async (req, res) => {
   );
 
   // Handle CORS pre-flight
-  if (req.method === "OPTIONS") {
+  if (
+    req.method === "POST" ||
+    req.method === "PUT" ||
+    req.method === "DELETE"
+  ) {
     res.status(200).end();
     return;
   }
